@@ -1,3 +1,6 @@
+// ignore_for_file: library_private_types_in_public_api
+
+import 'package:alarm_clock/models/alarm.dart';
 import 'package:mobx/mobx.dart';
 part 'item_controller.g.dart';
 
@@ -12,12 +15,8 @@ class ItemController = _ItemController with _$ItemController;
 
 abstract class _ItemController with Store {
 
-  _ItemController(this.title);
+  _ItemController(this.alarm);
 
-  final String title;
+  final Alarm alarm;
 
-  @observable
-  bool marked = false;
-
-  void changeMarker(bool? value) => marked = value!;
 }
