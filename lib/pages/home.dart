@@ -11,8 +11,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
-
   @override
   Widget build(BuildContext context) {
     final listController = Provider.of<ListController>(context);
@@ -32,7 +30,7 @@ class _HomeState extends State<Home> {
             return Observer(builder: (_) {
               return ListTile(
                 title: Text(
-                  item.alarm.name,
+                  '${item.name} - ${item.time.format(context)}',
                   style: const TextStyle(color: Colors.black),
                 ),
                 trailing: GestureDetector(

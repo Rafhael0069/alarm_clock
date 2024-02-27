@@ -1,6 +1,5 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'package:alarm_clock/controllers/item_controller.dart';
 import 'package:alarm_clock/models/alarm.dart';
 import 'package:mobx/mobx.dart';
 part 'list_controller.g.dart';
@@ -17,15 +16,20 @@ class ListController = _ListController with _$ListController;
 abstract class _ListController with Store {
 
   @observable
-  ObservableList<ItemController> listItens = ObservableList<ItemController>();
+  ObservableList<Alarm> listItens = ObservableList<Alarm>();
 
   @action
   void addItem(Alarm newAlarm) {
-    listItens.add(ItemController(newAlarm));
+    listItens.add(newAlarm);
   }
 
   @action
   void removeItem(int index) {
     listItens.removeAt(index);
+  }
+
+  @action
+  void updateItem(int index, Alarm alarm) {
+    listItens.setAll(index, [alarm]);
   }
 }

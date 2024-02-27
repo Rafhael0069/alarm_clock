@@ -16,19 +16,29 @@ class _NewAlarmState extends State<NewAlarm> {
   TextEditingController timeInput = TextEditingController();
   TextEditingController nameInput = TextEditingController();
   int? index;
-  late TimeOfDay time;
-  late bool newAlarm;
+  TimeOfDay time = TimeOfDay.now();
+  bool newAlarm = true;
+  late ListController listController;
+  String title = 'Novo alarme';
 
   @override
   void initState() {
-    index = ModalRoute.of(context)!.settings.arguments as int?;
-
-    if (index == null) {
-      newAlarm = false;
-    } else {
-      newAlarm = true;
-    }
     super.initState();
+  }
+  @override
+  void didChangeDependencies() {
+    index = ModalRoute.of(context)!.settings.arguments as int?;
+    listController = Provider.of<ListController>(context);
+
+    if (index != null) {
+      newAlarm = false;
+      title = 'Alarme';
+      var item = listController.listItens[index!];
+      time = item.time;
+      timeInput.text = item.time.format(context);
+      nameInput.text = item.name;
+    }
+    super.didChangeDependencies();
   }
 
   @override
@@ -37,7 +47,7 @@ class _NewAlarmState extends State<NewAlarm> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(newAlarm ? 'Alarme' : 'Novo Alarme'),
+        title: Text(title),
       ),
       body: Container(
         padding: const EdgeInsets.only(top: 16),
@@ -64,7 +74,7 @@ class _NewAlarmState extends State<NewAlarm> {
                     onTap: () async {
                       TimeOfDay? pickedTime = await showTimePicker(
                         context: context,
-                        initialTime: TimeOfDay.now(),
+                        initialTime: time,
                       );
                       if (pickedTime != null) {
                         String formattedDate = pickedTime.format(context);
@@ -81,7 +91,7 @@ class _NewAlarmState extends State<NewAlarm> {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-              child: ElevatedButton(
+              child: newAlarm? ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size.fromHeight(50),
                 ),
@@ -91,6 +101,21 @@ class _NewAlarmState extends State<NewAlarm> {
                   Navigator.pop(context);
                 },
                 child: const Text('Salvar'),
+              ): OutlinedButton(
+                style: ElevatedButton.styleFrom(
+                  side: BorderSide(
+                    width: 1,
+                    color: Colors.blue,
+                    style: BorderStyle.solid,
+                  ),
+                  minimumSize: const Size.fromHeight(50),
+                ),
+                onPressed: () {
+                   Alarm alarm = Alarm(nameInput.text, time);
+                   listController.updateItem(index!, alarm);
+                   Navigator.pop(context);
+                },
+                child: const Text('Atualizar'),
               ),
             ),
           ],
